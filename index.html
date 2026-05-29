@@ -1,0 +1,1373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>තෙම්පරාදුව (Themparaduwa) - Premium Sri Lankan Homemade Food</title>
+    <meta name="description" content="Premium homemade Sri Lankan food. Delicious chili pastes, cutlets, rolls, and sandwiches made with love.">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        :root {
+            --rich-red: #8B0000;
+            --deep-red: #5C0011;
+            --luxury-gold: #D4AF37;
+            --light-gold: #F4E4BC;
+            --dark-black: #0a0a0a;
+            --card-black: #111111;
+            --text-gray: #b0b0b0;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', 'Noto Sans Sinhala', sans-serif;
+            background: var(--dark-black);
+            color: #fff;
+            overflow-x: hidden;
+        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--dark-black); }
+        ::-webkit-scrollbar-thumb { background: var(--luxury-gold); border-radius: 4px; }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 5px var(--luxury-gold), 0 0 10px var(--luxury-gold); }
+            50% { box-shadow: 0 0 20px var(--luxury-gold), 0 0 30px var(--luxury-gold); }
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        .fade-in { animation: fadeInUp 0.8s ease-out forwards; }
+        .glow-effect { animation: glow 2s ease-in-out infinite; }
+        .float-animation { animation: float 3s ease-in-out infinite; }
+
+        .navbar {
+            position: fixed; top: 0; width: 100%; z-index: 1000; padding: 15px 0;
+            transition: all 0.3s ease; background: transparent;
+        }
+        .navbar.scrolled {
+            background: rgba(10, 10, 10, 0.95); backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.5);
+        }
+        .nav-container {
+            max-width: 1400px; margin: 0 auto; padding: 0 30px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .logo {
+            font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 700;
+            color: var(--luxury-gold); text-decoration: none;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .logo i { color: var(--rich-red); }
+        .nav-links { display: flex; gap: 30px; align-items: center; }
+        .nav-links a {
+            color: #fff; text-decoration: none; font-size: 0.95rem; font-weight: 500;
+            transition: color 0.3s; position: relative;
+        }
+        .nav-links a:hover { color: var(--luxury-gold); }
+        .nav-links a::after {
+            content: ''; position: absolute; bottom: -5px; left: 0; width: 0; height: 2px;
+            background: var(--luxury-gold); transition: width 0.3s;
+        }
+        .nav-links a:hover::after { width: 100%; }
+        .lang-toggle {
+            background: linear-gradient(135deg, var(--rich-red), var(--deep-red));
+            border: 1px solid var(--luxury-gold); color: var(--luxury-gold);
+            padding: 8px 20px; border-radius: 25px; cursor: pointer;
+            font-weight: 600; transition: all 0.3s;
+        }
+        .lang-toggle:hover { background: var(--luxury-gold); color: var(--dark-black); }
+        .mobile-menu-btn {
+            display: none; background: none; border: none;
+            color: var(--luxury-gold); font-size: 1.5rem; cursor: pointer;
+        }
+
+        .hero {
+            min-height: 100vh; position: relative; display: flex;
+            align-items: center; justify-content: center; overflow: hidden;
+        }
+        .hero-bg {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, rgba(139,0,0,0.3), rgba(10,10,10,0.9)),
+                        url('https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=1920&q=80') center/cover;
+            filter: brightness(0.4);
+        }
+        .hero-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(ellipse at center, transparent 0%, rgba(10,10,10,0.8) 70%);
+        }
+        .hero-content {
+            position: relative; z-index: 2; text-align: center;
+            padding: 0 20px; max-width: 900px;
+        }
+        .hero-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--rich-red), var(--deep-red));
+            color: var(--light-gold); padding: 10px 30px; border-radius: 50px;
+            font-size: 0.9rem; font-weight: 600; margin-bottom: 30px;
+            border: 1px solid var(--luxury-gold); animation: fadeInUp 0.8s ease-out;
+        }
+        .hero-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.5rem, 6vw, 5rem); font-weight: 800;
+            color: var(--luxury-gold); margin-bottom: 15px;
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+        .hero-subtitle-si {
+            font-family: 'Noto Sans Sinhala', sans-serif;
+            font-size: clamp(1.2rem, 3vw, 2rem); color: #fff;
+            margin-bottom: 10px; font-weight: 500;
+            animation: fadeInUp 0.8s ease-out 0.4s both;
+        }
+        .hero-subtitle-en {
+            font-size: clamp(1rem, 2vw, 1.3rem); color: var(--text-gray);
+            margin-bottom: 40px; font-weight: 300;
+            animation: fadeInUp 0.8s ease-out 0.6s both;
+        }
+        .hero-buttons {
+            display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;
+            animation: fadeInUp 0.8s ease-out 0.8s both;
+        }
+        .btn {
+            padding: 15px 35px; border-radius: 50px; font-weight: 600; font-size: 1rem;
+            cursor: pointer; transition: all 0.3s; text-decoration: none;
+            display: inline-flex; align-items: center; gap: 10px; border: none;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--rich-red), var(--deep-red));
+            color: #fff; border: 2px solid var(--luxury-gold);
+        }
+        .btn-primary:hover {
+            background: var(--luxury-gold); color: var(--dark-black);
+            transform: translateY(-3px); box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
+        }
+        .btn-secondary {
+            background: transparent; color: var(--luxury-gold);
+            border: 2px solid var(--luxury-gold);
+        }
+        .btn-secondary:hover {
+            background: var(--luxury-gold); color: var(--dark-black); transform: translateY(-3px);
+        }
+        .btn-whatsapp {
+            background: linear-gradient(135deg, #25D366, #128C7E);
+            color: #fff; border: 2px solid #25D366;
+        }
+        .btn-whatsapp:hover {
+            background: #25D366; transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(37, 211, 102, 0.3);
+        }
+        .particles {
+            position: absolute; width: 100%; height: 100%;
+            overflow: hidden; z-index: 1;
+        }
+        .particle {
+            position: absolute; width: 4px; height: 4px;
+            background: var(--luxury-gold); border-radius: 50%;
+            opacity: 0.5; animation: float 4s ease-in-out infinite;
+        }
+
+        .section { padding: 100px 20px; max-width: 1400px; margin: 0 auto; }
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 4vw, 3rem); color: var(--luxury-gold);
+            text-align: center; margin-bottom: 15px; position: relative;
+        }
+        .section-title::after {
+            content: ''; display: block; width: 80px; height: 3px;
+            background: linear-gradient(90deg, transparent, var(--luxury-gold), transparent);
+            margin: 15px auto;
+        }
+        .section-subtitle {
+            text-align: center; color: var(--text-gray); font-size: 1.1rem;
+            margin-bottom: 60px; max-width: 600px; margin-left: auto; margin-right: auto;
+        }
+
+        .about-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;
+        }
+        .about-image {
+            position: relative; border-radius: 20px; overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+        .about-image img {
+            width: 100%; height: 500px; object-fit: cover; transition: transform 0.5s;
+        }
+        .about-image:hover img { transform: scale(1.05); }
+        .about-image::before {
+            content: ''; position: absolute; top: -10px; left: -10px;
+            right: 10px; bottom: 10px; border: 2px solid var(--luxury-gold);
+            border-radius: 20px; z-index: -1;
+        }
+        .about-content h3 {
+            font-family: 'Playfair Display', serif; font-size: 2rem;
+            color: var(--luxury-gold); margin-bottom: 20px;
+        }
+        .about-content p {
+            color: var(--text-gray); line-height: 1.8; margin-bottom: 20px; font-size: 1.05rem;
+        }
+        .feature-cards {
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 30px;
+        }
+        .feature-card {
+            background: var(--card-black); border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 15px; padding: 25px; transition: all 0.3s;
+        }
+        .feature-card:hover {
+            border-color: var(--luxury-gold); transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.1);
+        }
+        .feature-card i { font-size: 2rem; color: var(--luxury-gold); margin-bottom: 15px; }
+        .feature-card h4 { color: #fff; margin-bottom: 10px; font-size: 1.1rem; }
+        .feature-card p { color: var(--text-gray); font-size: 0.9rem; margin: 0; }
+
+        .menu-filters {
+            display: flex; justify-content: center; gap: 15px;
+            margin-bottom: 50px; flex-wrap: wrap;
+        }
+        .filter-btn {
+            padding: 10px 25px; background: var(--card-black);
+            border: 1px solid rgba(212, 175, 55, 0.3); color: var(--text-gray);
+            border-radius: 25px; cursor: pointer; transition: all 0.3s; font-weight: 500;
+        }
+        .filter-btn:hover, .filter-btn.active {
+            background: linear-gradient(135deg, var(--rich-red), var(--deep-red));
+            color: #fff; border-color: var(--luxury-gold);
+        }
+        .menu-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px;
+        }
+        .menu-card {
+            background: var(--card-black); border-radius: 20px; overflow: hidden;
+            border: 1px solid rgba(212, 175, 55, 0.15); transition: all 0.4s; position: relative;
+        }
+        .menu-card:hover {
+            transform: translateY(-10px); border-color: var(--luxury-gold);
+            box-shadow: 0 20px 40px rgba(212, 175, 55, 0.15);
+        }
+        .menu-card-image {
+            height: 220px; overflow: hidden; position: relative;
+        }
+        .menu-card-image img {
+            width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s;
+        }
+        .menu-card:hover .menu-card-image img { transform: scale(1.1); }
+        .menu-card-badge {
+            position: absolute; top: 15px; right: 15px;
+            background: linear-gradient(135deg, var(--rich-red), var(--deep-red));
+            color: #fff; padding: 5px 15px; border-radius: 20px;
+            font-size: 0.85rem; font-weight: 600;
+        }
+        .menu-card-content { padding: 25px; }
+        .menu-card-name-si {
+            font-family: 'Noto Sans Sinhala', sans-serif; font-size: 1.3rem;
+            color: #fff; margin-bottom: 5px;
+        }
+        .menu-card-name-en {
+            color: var(--luxury-gold); font-size: 0.95rem;
+            margin-bottom: 10px; font-weight: 500;
+        }
+        .menu-card-desc {
+            color: var(--text-gray); font-size: 0.9rem;
+            line-height: 1.6; margin-bottom: 15px;
+        }
+        .menu-card-footer {
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .menu-card-price { font-size: 1.4rem; font-weight: 700; color: var(--luxury-gold); }
+        .menu-card-order {
+            background: linear-gradient(135deg, var(--rich-red), var(--deep-red));
+            color: #fff; border: none; padding: 10px 25px;
+            border-radius: 25px; cursor: pointer; font-weight: 600;
+            transition: all 0.3s; display: flex; align-items: center; gap: 8px;
+        }
+        .menu-card-order:hover {
+            background: var(--luxury-gold); color: var(--dark-black); transform: scale(1.05);
+        }
+
+        .catering-section {
+            background: linear-gradient(135deg, rgba(139,0,0,0.1), rgba(10,10,10,0.9));
+            border-radius: 30px; padding: 80px 40px; text-align: center;
+            position: relative; overflow: hidden;
+        }
+        .catering-section::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: url('https://images.unsplash.com/photo-1555244162-80379f50736b?w=1200&q=80') center/cover;
+            opacity: 0.1;
+        }
+        .catering-content { position: relative; z-index: 1; }
+        .catering-text-si {
+            font-family: 'Noto Sans Sinhala', sans-serif;
+            font-size: clamp(1.5rem, 3vw, 2.2rem); color: #fff; margin-bottom: 15px;
+        }
+        .catering-text-en {
+            font-size: clamp(1rem, 2vw, 1.3rem); color: var(--text-gray); margin-bottom: 40px;
+        }
+        .event-cards {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 25px; max-width: 900px; margin: 0 auto;
+        }
+        .event-card {
+            background: rgba(17, 17, 17, 0.8); border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 15px; padding: 30px 20px; transition: all 0.3s;
+        }
+        .event-card:hover {
+            border-color: var(--luxury-gold); transform: translateY(-5px);
+            background: rgba(139, 0, 0, 0.2);
+        }
+        .event-card i { font-size: 2.5rem; color: var(--luxury-gold); margin-bottom: 15px; }
+        .event-card h4 { color: #fff; font-size: 1.1rem; }
+
+        .gallery-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;
+        }
+        .gallery-item {
+            position: relative; border-radius: 15px; overflow: hidden;
+            cursor: pointer; aspect-ratio: 1;
+        }
+        .gallery-item img {
+            width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s;
+        }
+        .gallery-item:hover img { transform: scale(1.15); }
+        .gallery-overlay {
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(to top, rgba(139,0,0,0.8), transparent);
+            display: flex; align-items: flex-end; padding: 20px;
+            opacity: 0; transition: opacity 0.3s;
+        }
+        .gallery-item:hover .gallery-overlay { opacity: 1; }
+        .gallery-overlay-text { color: #fff; font-weight: 600; }
+
+        .order-section {
+            background: linear-gradient(135deg, rgba(139,0,0,0.15), rgba(10,10,10,0.95));
+            border-radius: 30px; padding: 80px 40px;
+        }
+        .order-form { max-width: 600px; margin: 0 auto; }
+        .form-group { margin-bottom: 25px; }
+        .form-group label {
+            display: block; color: var(--luxury-gold);
+            margin-bottom: 10px; font-weight: 500;
+        }
+        .form-group input, .form-group textarea {
+            width: 100%; padding: 15px 20px; background: var(--card-black);
+            border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 10px;
+            color: #fff; font-size: 1rem; transition: all 0.3s; font-family: inherit;
+        }
+        .form-group input:focus, .form-group textarea:focus {
+            outline: none; border-color: var(--luxury-gold);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+        }
+        .form-group textarea { min-height: 120px; resize: vertical; }
+        .submit-btn {
+            width: 100%; padding: 18px;
+            background: linear-gradient(135deg, #25D366, #128C7E);
+            color: #fff; border: none; border-radius: 50px;
+            font-size: 1.1rem; font-weight: 700; cursor: pointer;
+            transition: all 0.3s; display: flex; align-items: center;
+            justify-content: center; gap: 10px;
+        }
+        .submit-btn:hover {
+            transform: translateY(-3px); box-shadow: 0 15px 30px rgba(37, 211, 102, 0.3);
+        }
+
+        .contact-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px; max-width: 1000px; margin: 0 auto;
+        }
+        .contact-card {
+            background: var(--card-black); border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 20px; padding: 40px 30px; text-align: center;
+            transition: all 0.3s; text-decoration: none; color: inherit; display: block;
+        }
+        .contact-card:hover {
+            border-color: var(--luxury-gold); transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(212, 175, 55, 0.1);
+        }
+        .contact-card i { font-size: 2.5rem; color: var(--luxury-gold); margin-bottom: 20px; }
+        .contact-card h4 { color: #fff; margin-bottom: 10px; font-size: 1.2rem; }
+        .contact-card p { color: var(--text-gray); font-size: 1rem; }
+
+        .footer {
+            background: #050505; border-top: 1px solid rgba(212, 175, 55, 0.2);
+            padding: 60px 20px 30px;
+        }
+        .footer-content {
+            max-width: 1400px; margin: 0 auto;
+            display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 40px; margin-bottom: 40px;
+        }
+        .footer-brand h3 {
+            font-family: 'Playfair Display', serif; color: var(--luxury-gold);
+            font-size: 1.8rem; margin-bottom: 15px;
+        }
+        .footer-brand p { color: var(--text-gray); line-height: 1.7; }
+        .footer-links h4 {
+            color: var(--luxury-gold); margin-bottom: 20px; font-size: 1.1rem;
+        }
+        .footer-links a {
+            display: block; color: var(--text-gray); text-decoration: none;
+            margin-bottom: 12px; transition: color 0.3s;
+        }
+        .footer-links a:hover { color: var(--luxury-gold); }
+        .social-links {
+            display: flex; gap: 15px; margin-top: 20px;
+        }
+        .social-links a {
+            width: 45px; height: 45px; border-radius: 50%; background: var(--card-black);
+            border: 1px solid rgba(212, 175, 55, 0.3); display: flex; align-items: center;
+            justify-content: center; color: var(--luxury-gold); font-size: 1.2rem;
+            transition: all 0.3s; text-decoration: none;
+        }
+        .social-links a:hover {
+            background: var(--luxury-gold); color: var(--dark-black); transform: translateY(-3px);
+        }
+        .footer-bottom {
+            text-align: center; padding-top: 30px;
+            border-top: 1px solid rgba(212, 175, 55, 0.1);
+            color: var(--text-gray); font-size: 0.9rem;
+        }
+
+        .whatsapp-float {
+            position: fixed; bottom: 30px; right: 30px;
+            width: 60px; height: 60px;
+            background: linear-gradient(135deg, #25D366, #128C7E);
+            border-radius: 50%; display: flex; align-items: center;
+            justify-content: center; color: #fff; font-size: 1.8rem;
+            box-shadow: 0 5px 20px rgba(37, 211, 102, 0.4);
+            cursor: pointer; z-index: 999; transition: all 0.3s;
+            text-decoration: none; animation: pulse 2s infinite;
+        }
+        .whatsapp-float:hover {
+            transform: scale(1.1); box-shadow: 0 8px 30px rgba(37, 211, 102, 0.6);
+        }
+
+        .admin-trigger {
+            position: fixed; bottom: 30px; left: 30px;
+            width: 50px; height: 50px; background: var(--card-black);
+            border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--luxury-gold); cursor: pointer; z-index: 998;
+            transition: all 0.3s; opacity: 0.5;
+        }
+        .admin-trigger:hover { opacity: 1; background: var(--rich-red); color: #fff; }
+
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.9); z-index: 2000;
+            display: flex; align-items: center; justify-content: center; padding: 20px;
+        }
+        .modal-content {
+            background: var(--card-black); border: 1px solid var(--luxury-gold);
+            border-radius: 20px; padding: 40px; max-width: 500px; width: 100%; position: relative;
+        }
+        .modal-close {
+            position: absolute; top: 15px; right: 15px;
+            background: none; border: none; color: var(--luxury-gold);
+            font-size: 1.5rem; cursor: pointer;
+        }
+        .modal-title {
+            font-family: 'Playfair Display', serif; color: var(--luxury-gold);
+            font-size: 1.8rem; margin-bottom: 30px; text-align: center;
+        }
+        .admin-dashboard {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: var(--dark-black); z-index: 3000; overflow-y: auto;
+        }
+        .admin-header {
+            background: linear-gradient(135deg, var(--rich-red), var(--deep-red));
+            padding: 20px 40px; display: flex;
+            justify-content: space-between; align-items: center;
+        }
+        .admin-header h2 { color: var(--luxury-gold); font-family: 'Playfair Display', serif; }
+        .admin-close {
+            background: none; border: 2px solid var(--luxury-gold);
+            color: var(--luxury-gold); padding: 10px 25px;
+            border-radius: 25px; cursor: pointer; font-weight: 600;
+            transition: all 0.3s;
+        }
+        .admin-close:hover { background: var(--luxury-gold); color: var(--dark-black); }
+        .admin-body { padding: 40px; max-width: 1200px; margin: 0 auto; }
+        .admin-tabs {
+            display: flex; gap: 10px; margin-bottom: 30px; flex-wrap: wrap;
+        }
+        .admin-tab {
+            padding: 12px 25px; background: var(--card-black);
+            border: 1px solid rgba(212, 175, 55, 0.3); color: var(--text-gray);
+            border-radius: 10px; cursor: pointer; transition: all 0.3s; font-weight: 500;
+        }
+        .admin-tab:hover, .admin-tab.active {
+            background: linear-gradient(135deg, var(--rich-red), var(--deep-red));
+            color: #fff; border-color: var(--luxury-gold);
+        }
+        .admin-panel {
+            background: var(--card-black); border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 15px; padding: 30px;
+        }
+        .admin-form-group { margin-bottom: 20px; }
+        .admin-form-group label {
+            display: block; color: var(--luxury-gold);
+            margin-bottom: 8px; font-weight: 500;
+        }
+        .admin-form-group input, .admin-form-group textarea {
+            width: 100%; padding: 12px 15px; background: var(--dark-black);
+            border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 8px;
+            color: #fff; font-size: 0.95rem;
+        }
+        .admin-form-group input:focus, .admin-form-group textarea:focus {
+            outline: none; border-color: var(--luxury-gold);
+        }
+        .admin-btn {
+            padding: 12px 30px;
+            background: linear-gradient(135deg, var(--rich-red), var(--deep-red));
+            color: #fff; border: 1px solid var(--luxury-gold);
+            border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.3s;
+        }
+        .admin-btn:hover { background: var(--luxury-gold); color: var(--dark-black); }
+        .admin-menu-list { display: grid; gap: 15px; }
+        .admin-menu-item {
+            background: var(--dark-black); border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 10px; padding: 20px;
+            display: grid; grid-template-columns: 80px 1fr auto;
+            gap: 15px; align-items: center;
+        }
+        .admin-menu-item img { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; }
+        .admin-menu-item-info h4 { color: #fff; margin-bottom: 5px; }
+        .admin-menu-item-info p { color: var(--text-gray); font-size: 0.9rem; }
+        .admin-menu-actions { display: flex; gap: 10px; }
+        .admin-action-btn {
+            padding: 8px 15px; border-radius: 6px; cursor: pointer;
+            font-weight: 500; border: none; transition: all 0.3s;
+        }
+        .admin-action-btn.edit { background: var(--luxury-gold); color: var(--dark-black); }
+        .admin-action-btn.delete { background: var(--rich-red); color: #fff; }
+
+        .lightbox {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.95); z-index: 2000;
+            display: flex; align-items: center; justify-content: center; padding: 20px;
+        }
+        .lightbox img {
+            max-width: 90%; max-height: 90%; border-radius: 10px;
+            border: 2px solid var(--luxury-gold);
+        }
+        .lightbox-close {
+            position: absolute; top: 20px; right: 20px;
+            background: none; border: none; color: var(--luxury-gold);
+            font-size: 2rem; cursor: pointer;
+        }
+
+        @media (max-width: 1024px) {
+            .about-grid { grid-template-columns: 1fr; }
+            .footer-content { grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none; position: absolute; top: 100%; left: 0; right: 0;
+                background: rgba(10, 10, 10, 0.98); flex-direction: column;
+                padding: 20px; gap: 15px;
+            }
+            .nav-links.active { display: flex; }
+            .mobile-menu-btn { display: block; }
+            .hero-buttons { flex-direction: column; align-items: center; }
+            .btn { width: 100%; max-width: 300px; justify-content: center; }
+            .feature-cards { grid-template-columns: 1fr; }
+            .section { padding: 60px 15px; }
+            .footer-content { grid-template-columns: 1fr; text-align: center; }
+            .social-links { justify-content: center; }
+            .admin-menu-item { grid-template-columns: 1fr; text-align: center; }
+            .admin-menu-item img { margin: 0 auto; }
+        }
+
+        .reveal {
+            opacity: 0; transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+    </style>
+<base target="_blank">
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        const defaultMenuItems = [
+            { id: 1, nameSi: "කූනිස්සෝ චිලි පෙස්ටි", nameEn: "Shrimp Chili Paste", price: "450", desc: "Spicy homemade shrimp chili paste with authentic Sri Lankan spices", category: "paste", image: "https://kimi-web-img.moonshot.cn/img/madebyhersl.com/ffd583a116e1e945f7243334e6a2e047ce004049.jpg" },
+            { id: 2, nameSi: "කෙසෙල් මුව චිලි පෙස්ටි", nameEn: "Banana Blossom Chili Paste", price: "350", desc: "Traditional banana blossom chili paste with a unique flavor", category: "paste", image: "https://kimi-web-img.moonshot.cn/img/topsrilankanrecipe.com/e363755273125ab25a86f8372ae21998522864ea.jpg" },
+            { id: 3, nameSi: "උම්බලකඩ චිලි පෙස්ටි", nameEn: "Maldive Fish Chili Paste", price: "400", desc: "Premium Maldive fish chili paste with rich umami flavor", category: "paste", image: "https://kimi-web-img.moonshot.cn/img/www.ceylonsupermart.com/8c2bd1996a0c44bc15c95e9b0034d7ce4f7cb986.jpg" },
+            { id: 4, nameSi: "ලුණු දෙහි", nameEn: "Lime Pickle", price: "300", desc: "Tangy and spicy lime pickle, perfect with any meal", category: "paste", image: "https://kimi-web-img.moonshot.cn/img/www.196flavors.com/91096e767ea64466ec758a786d30bbaf15b43f14.jpg" },
+            { id: 5, nameSi: "මාළු කට්ලට්", nameEn: "Fish Cutlets", price: "80", desc: "Crispy fish cutlets with spiced tuna filling", category: "cutlet", image: "https://kimi-web-img.moonshot.cn/img/www.kannammacooks.com/c1dd14a6856d9fc4b09a91d3b16710fc0346a7ca.jpg" },
+            { id: 6, nameSi: "එළවළු කට්ලට්", nameEn: "Vegetable Cutlets", price: "60", desc: "Delicious vegetable cutlets with mixed veggie filling", category: "cutlet", image: "https://kimi-web-img.moonshot.cn/img/www.kannammacooks.com/6c2e91d4c74086b662dd2af25b984baa9e9d0672.jpg" },
+            { id: 7, nameSi: "චීස් කට්ලට්", nameEn: "Cheese Cutlets", price: "90", desc: "Cheesy cutlets with melted cheese center", category: "cutlet", image: "https://kimi-web-img.moonshot.cn/img/www.theflavorbender.com/7f527c5fa24cff0849631da43824600be9cbea8b.jpg" },
+            { id: 8, nameSi: "මාළු රෝල්ස්", nameEn: "Fish Rolls", price: "100", desc: "Crispy rolls filled with spiced fish", category: "roll", image: "https://kimi-web-img.moonshot.cn/img/therecipe.website/d895c7dc1b50fc36e40694de1e8e7fd0bd90880d.jpg" },
+            { id: 9, nameSi: "චිකන් රෝල්ස්", nameEn: "Chicken Rolls", price: "110", desc: "Golden chicken rolls with savory filling", category: "roll", image: "https://kimi-web-img.moonshot.cn/img/www.ruchikrandhap.com/239065c1177684d5bd6bd26e458a55ef66d1e918.jpg" },
+            { id: 10, nameSi: "එළවළු රෝල්ස්", nameEn: "Vegetable Rolls", price: "70", desc: "Fresh vegetable rolls with crunchy filling", category: "roll", image: "https://kimi-web-img.moonshot.cn/img/blogger.googleusercontent.com/f5080464ee3210bde0a4ec0c4dc8c14e36e97d03.JPG" },
+            { id: 11, nameSi: "චීස් චිකන් රෝල්ස්", nameEn: "Cheese Chicken Rolls", price: "130", desc: "Chicken rolls with melted cheese inside", category: "roll", image: "https://kimi-web-img.moonshot.cn/img/blogger.googleusercontent.com/75ff1760c891995189feb9a71178a2ad6b8e0413.jpg" },
+            { id: 12, nameSi: "ටූනා සැන්විච්", nameEn: "Tuna Sandwich", price: "150", desc: "Fresh tuna sandwich with Sri Lankan spices", category: "sandwich", image: "https://kimi-web-img.moonshot.cn/img/www.hungrylankan.com/cf572bd66bcce4bda83207684d7a853a433167dd.jpg" },
+            { id: 13, nameSi: "චිකන් සැන්විච්", nameEn: "Chicken Sandwich", price: "160", desc: "Tender chicken sandwich with special sauce", category: "sandwich", image: "https://kimi-web-img.moonshot.cn/img/d2mn201dsd7t98.cloudfront.net/5c070813dac8a08c79afdf2395df316a6792b680.jpg" },
+            { id: 14, nameSi: "චිකන් චීස් සැන්විච්", nameEn: "Chicken Cheese Sandwich", price: "180", desc: "Chicken and cheese sandwich, a perfect combo", category: "sandwich", image: "https://kimi-web-img.moonshot.cn/img/i0.wp.com/188e74c9dc746f13a79215f070c0dc6239776c27.jpg" }
+        ];
+
+        const defaultGalleryImages = [
+            "https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=800&q=80",
+            "https://kimi-web-img.moonshot.cn/img/media.istockphoto.com/abb16d09ee7c9189064ebbe55023e4d4a86fa246.jpg",
+            "https://kimi-web-img.moonshot.cn/img/img.magnific.com/dd8062523214a7059e03d1a7e1f06801bcc4e08f.jpg",
+            "https://kimi-web-img.moonshot.cn/img/images.squarespace-cdn.com/958591d1f718b003cf31a16117fbe3c8f97ebea5.jpg",
+            "https://kimi-web-img.moonshot.cn/img/pereraandsons.com/ce1d6c31dd2263ad6e58b19799658571e9e91bab.jpg",
+            "https://kimi-web-img.moonshot.cn/img/www.seriouseats.com/6e81ce8335604e59e5788b668fb05a150a16439d.jpg"
+        ];
+
+        const translations = {
+            si: {
+                home: "මුල් පිටුව", about: "අපි ගැන", menu: "මෙනුව", catering: "කේටරිං",
+                gallery: "ගැලරිය", order: "ඇණවුම්", contact: "සම්බන්ධතා",
+                heroSubtitle: "රසට කන්න ආස ඔබ වෙනුවෙන්ම",
+                heroSubtitleEn: "Delicious homemade Sri Lankan flavors made with love",
+                orderWhatsapp: "WhatsApp ඇණවුම", callNow: "දැන් අමතන්න", exploreMenu: "මෙනුව බලන්න",
+                aboutTitle: "අපි ගැන",
+                aboutText1: "තෙම්පරාදුව යනු ශ්‍රී ලාංකික ගෘහස්ථ ආහාර වලට සම්පූර්ණ ආදරයෙන් සහ කැමැත්තෙන් සාදන ලද ප්‍රීමියම් ගෘහස්ථ ආහාර ව්‍යාපාරයකි. අපගේ සියලුම ආහාර තත්ත්වාකාරී, පිරිසිදු සහ රසවත් ලෙස සකස් කර ඇත.",
+                aboutText2: "අපි නැවුම් අමුද්‍රව්‍ය භාවිතා කරමු, පිරිසිදු පිසින ක්‍රම අනුගමනය කරමු, සහ සියලු උත්සව අවස්ථාවන් සඳහා කෑම සපයමු. අපගේ මිතුරු සේවාව ඔබව සාදරයෙන් පිළිගනී.",
+                freshIngredients: "නැවුම් අමුද්‍රව්‍ය", freshDesc: "ප්‍රතිදින නැවුම් අමුද්‍රව්‍ය භාවිතය",
+                hygienic: "පිරිසිදු පිසින ක්‍රම", hygienicDesc: "උසස්ම සනීපාරක්ෂක ප්‍රමිතීන්",
+                quality: "උසස් තත්ත්වය", qualityDesc: "රසවත් සහ ගුණාත්මක ආහාර",
+                catering: "සියලු උත්සව", cateringDesc: "සියලුම උත්සව අවස්ථාවන් සඳහා",
+                menuTitle: "අපගේ මෙනුව", menuSubtitle: "ශ්‍රී ලාංකික රසවත් ආහාර විවිධාව",
+                all: "සියලු", pastes: "පෙස්ටි", cutlets: "කට්ලට්", rolls: "රෝල්ස්", sandwiches: "සැන්විච්",
+                orderBtn: "ඇණවුම්",
+                cateringTitle: "කේටරිං සේවා",
+                cateringText: "සියළුම උත්සව අවස්ථාවන් සඳහා කෑම ඔඩර් බාර ගනු ලැබේ",
+                cateringTextEn: "We accept food orders for all kinds of events and special occasions.",
+                weddings: "විවාහ මංගල්‍ය", parties: "පිළිගැනීම්", functions: "වෙනත් උත්සව",
+                corporate: "කාර්යාල උත්සව", birthday: "උපන්දින",
+                galleryTitle: "අපගේ ගැලරිය", gallerySubtitle: "ශ්‍රී ලාංකික ආහාර කලාවේ සුන්දරත්වය",
+                orderTitle: "ඔන්ලයින් ඇණවුම්", orderSubtitle: "ඔබගේ ඇණවුම WhatsApp හරහා සෘජුව යවන්න",
+                name: "නම", phone: "දුරකථන අංකය", orderDetails: "ඇණවුම් විස්තර",
+                submitOrder: "ඇණවුම යවන්න",
+                contactTitle: "සම්බන්ධ වන්න", contactSubtitle: "අප හා සම්බන්ධ වීමට",
+                phoneLabel: "දුරකථන", whatsappLabel: "WhatsApp",
+                facebookLabel: "Facebook", locationLabel: "පිහිටීම",
+                onlineService: "ඔන්ලයින් සේවාව",
+                quickLinks: "ඉක්මන් සබැඳි", services: "සේවා", followUs: "අපව අනුගමනය කරන්න",
+                copyright: "© 2024 තෙම්පරාදුව (Themparaduwa). සියලු හිමිකම් ඇවිරිණි."
+            },
+            en: {
+                home: "Home", about: "About", menu: "Menu", catering: "Catering",
+                gallery: "Gallery", order: "Order", contact: "Contact",
+                heroSubtitle: "රසට කන්න ආස ඔබ වෙනුවෙන්ම",
+                heroSubtitleEn: "Delicious homemade Sri Lankan flavors made with love",
+                orderWhatsapp: "Order on WhatsApp", callNow: "Call Now", exploreMenu: "Explore Menu",
+                aboutTitle: "About Us",
+                aboutText1: "Themparaduwa is a premium homemade food brand that prepares all Sri Lankan homemade foods with complete love and dedication. All our foods are prepared with quality, cleanliness, and great taste in mind.",
+                aboutText2: "We use fresh ingredients, follow hygienic cooking methods, and cater for all events. Our friendly customer service welcomes you warmly.",
+                freshIngredients: "Fresh Ingredients", freshDesc: "Using fresh daily ingredients",
+                hygienic: "Hygienic Cooking", hygienicDesc: "Highest hygiene standards",
+                quality: "Premium Quality", qualityDesc: "Tasty and quality foods",
+                catering: "All Events", cateringDesc: "For all special occasions",
+                menuTitle: "Our Menu", menuSubtitle: "Variety of delicious Sri Lankan foods",
+                all: "All", pastes: "Pastes", cutlets: "Cutlets", rolls: "Rolls", sandwiches: "Sandwiches",
+                orderBtn: "Order",
+                cateringTitle: "Catering Services",
+                cateringText: "සියළුම උත්සව අවස්ථාවන් සඳහා කෑම ඔඩර් බාර ගනු ලැබේ",
+                cateringTextEn: "We accept food orders for all kinds of events and special occasions.",
+                weddings: "Weddings", parties: "Parties", functions: "Functions",
+                corporate: "Corporate", birthday: "Birthdays",
+                galleryTitle: "Our Gallery", gallerySubtitle: "The beauty of Sri Lankan food art",
+                orderTitle: "Online Order", orderSubtitle: "Send your order directly via WhatsApp",
+                name: "Name", phone: "Phone Number", orderDetails: "Order Details",
+                submitOrder: "Submit Order",
+                contactTitle: "Contact Us", contactSubtitle: "Get in touch with us",
+                phoneLabel: "Phone", whatsappLabel: "WhatsApp",
+                facebookLabel: "Facebook", locationLabel: "Location",
+                onlineService: "Online Service",
+                quickLinks: "Quick Links", services: "Services", followUs: "Follow Us",
+                copyright: "© 2024 Themparaduwa. All rights reserved."
+            }
+        };
+
+        function App() {
+            const [lang, setLang] = useState('si');
+            const [menuItems, setMenuItems] = useState(() => {
+                const saved = localStorage.getItem('themparaduwa_menu');
+                return saved ? JSON.parse(saved) : defaultMenuItems;
+            });
+            const [galleryImages, setGalleryImages] = useState(() => {
+                const saved = localStorage.getItem('themparaduwa_gallery');
+                return saved ? JSON.parse(saved) : defaultGalleryImages;
+            });
+            const [activeFilter, setActiveFilter] = useState('all');
+            const [showAdmin, setShowAdmin] = useState(false);
+            const [adminLoggedIn, setAdminLoggedIn] = useState(false);
+            const [adminPassword, setAdminPassword] = useState('');
+            const [adminTab, setAdminTab] = useState('menu');
+            const [lightboxImage, setLightboxImage] = useState(null);
+            const [mobileMenu, setMobileMenu] = useState(false);
+            const [scrolled, setScrolled] = useState(false);
+
+            const t = translations[lang];
+
+            useEffect(() => {
+                localStorage.setItem('themparaduwa_menu', JSON.stringify(menuItems));
+            }, [menuItems]);
+
+            useEffect(() => {
+                localStorage.setItem('themparaduwa_gallery', JSON.stringify(galleryImages));
+            }, [galleryImages]);
+
+            useEffect(() => {
+                const handleScroll = () => {
+                    setScrolled(window.scrollY > 50);
+                    const reveals = document.querySelectorAll('.reveal');
+                    reveals.forEach(reveal => {
+                        const windowHeight = window.innerHeight;
+                        const elementTop = reveal.getBoundingClientRect().top;
+                        if (elementTop < windowHeight - 150) {
+                            reveal.classList.add('active');
+                        }
+                    });
+                };
+                window.addEventListener('scroll', handleScroll);
+                handleScroll();
+                return () => window.removeEventListener('scroll', handleScroll);
+            }, []);
+
+            const filteredMenu = activeFilter === 'all' 
+                ? menuItems 
+                : menuItems.filter(item => item.category === activeFilter);
+
+            const handleOrder = (item) => {
+                const message = `Hello Themparaduwa! I would like to order: ${item.nameEn} (${item.nameSi}) - Rs. ${item.price}`;
+                window.open(`https://wa.me/94725018517?text=${encodeURIComponent(message)}`, '_blank');
+            };
+
+            const handleFormSubmit = (e) => {
+                e.preventDefault();
+                const formData = new FormData(e.target);
+                const name = formData.get('name');
+                const phone = formData.get('phone');
+                const details = formData.get('details');
+                const message = `New Order from Themparaduwa Website!\n\nName: ${name}\nPhone: ${phone}\nOrder: ${details}`;
+                window.open(`https://wa.me/94725018517?text=${encodeURIComponent(message)}`, '_blank');
+                e.target.reset();
+                alert(lang === 'si' ? 'ඇණවුම යවන ලදී! WhatsApp හරහා සම්බන්ධ වෙමු.' : 'Order sent! We will contact you via WhatsApp.');
+            };
+
+            const handleAdminLogin = () => {
+                if (adminPassword === '9517') {
+                    setAdminLoggedIn(true);
+                    setAdminPassword('');
+                } else {
+                    alert('Invalid password!');
+                }
+            };
+
+            const scrollToSection = (id) => {
+                document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+                setMobileMenu(false);
+            };
+
+            const filters = [
+                { key: 'all', label: t.all },
+                { key: 'paste', label: t.pastes },
+                { key: 'cutlet', label: t.cutlets },
+                { key: 'roll', label: t.rolls },
+                { key: 'sandwich', label: t.sandwiches }
+            ];
+
+            return (
+                <div>
+                    <nav className={`navbar ${scrolled ? 'scrolled' : ''}`}>
+                        <div className="nav-container">
+                            <a href="#" className="logo" onClick={() => scrollToSection('hero')}>
+                                <i className="fas fa-utensils"></i>
+                                තෙම්පරාදුව
+                            </a>
+                            <div className={`nav-links ${mobileMenu ? 'active' : ''}`}>
+                                <a href="#" onClick={(e) => { e.preventDefault(); scrollToSection('hero'); }}>{t.home}</a>
+                                <a href="#about" onClick={(e) => { e.preventDefault(); scrollToSection('about'); }}>{t.about}</a>
+                                <a href="#menu" onClick={(e) => { e.preventDefault(); scrollToSection('menu'); }}>{t.menu}</a>
+                                <a href="#catering" onClick={(e) => { e.preventDefault(); scrollToSection('catering'); }}>{t.catering}</a>
+                                <a href="#gallery" onClick={(e) => { e.preventDefault(); scrollToSection('gallery'); }}>{t.gallery}</a>
+                                <a href="#order" onClick={(e) => { e.preventDefault(); scrollToSection('order'); }}>{t.order}</a>
+                                <a href="#contact" onClick={(e) => { e.preventDefault(); scrollToSection('contact'); }}>{t.contact}</a>
+                                <button className="lang-toggle" onClick={() => setLang(lang === 'si' ? 'en' : 'si')}>
+                                    {lang === 'si' ? 'English' : 'සිංහල'}
+                                </button>
+                            </div>
+                            <button className="mobile-menu-btn" onClick={() => setMobileMenu(!mobileMenu)}>
+                                <i className={`fas ${mobileMenu ? 'fa-times' : 'fa-bars'}`}></i>
+                            </button>
+                        </div>
+                    </nav>
+
+                    <section id="hero" className="hero">
+                        <div className="hero-bg"></div>
+                        <div className="hero-overlay"></div>
+                        <div className="particles">
+                            {[...Array(20)].map((_, i) => (
+                                <div key={i} className="particle" style={{
+                                    left: `${Math.random() * 100}%`,
+                                    top: `${Math.random() * 100}%`,
+                                    animationDelay: `${Math.random() * 4}s`,
+                                    animationDuration: `${3 + Math.random() * 3}s`
+                                }}></div>
+                            ))}
+                        </div>
+                        <div className="hero-content">
+                            <div className="hero-badge">
+                                <i className="fas fa-star"></i> Premium Homemade Sri Lankan Food
+                            </div>
+                            <h1 className="hero-title">තෙම්පරාදුව<br/><span style={{fontSize: '0.6em', color: '#fff'}}>(Themparaduwa)</span></h1>
+                            <p className="hero-subtitle-si">{t.heroSubtitle}</p>
+                            <p className="hero-subtitle-en">{t.heroSubtitleEn}</p>
+                            <div className="hero-buttons">
+                                <a href="https://wa.me/94725018517" target="_blank" className="btn btn-whatsapp">
+                                    <i className="fab fa-whatsapp"></i> {t.orderWhatsapp}
+                                </a>
+                                <a href="tel:0725018517" className="btn btn-primary">
+                                    <i className="fas fa-phone"></i> {t.callNow}
+                                </a>
+                                <button className="btn btn-secondary" onClick={() => scrollToSection('menu')}>
+                                    <i className="fas fa-utensils"></i> {t.exploreMenu}
+                                </button>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="about" className="section">
+                        <h2 className="section-title reveal">{t.aboutTitle}</h2>
+                        <p className="section-subtitle reveal">{t.heroSubtitleEn}</p>
+                        <div className="about-grid reveal">
+                            <div className="about-image">
+                                <img src="https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=800&q=80" alt="Sri Lankan Food" />
+                            </div>
+                            <div className="about-content">
+                                <h3>තෙම්පරාදුව (Themparaduwa)</h3>
+                                <p>{t.aboutText1}</p>
+                                <p>{t.aboutText2}</p>
+                                <div className="feature-cards">
+                                    <div className="feature-card">
+                                        <i className="fas fa-leaf"></i>
+                                        <h4>{t.freshIngredients}</h4>
+                                        <p>{t.freshDesc}</p>
+                                    </div>
+                                    <div className="feature-card">
+                                        <i className="fas fa-shield-alt"></i>
+                                        <h4>{t.hygienic}</h4>
+                                        <p>{t.hygienicDesc}</p>
+                                    </div>
+                                    <div className="feature-card">
+                                        <i className="fas fa-award"></i>
+                                        <h4>{t.quality}</h4>
+                                        <p>{t.qualityDesc}</p>
+                                    </div>
+                                    <div className="feature-card">
+                                        <i className="fas fa-calendar-alt"></i>
+                                        <h4>{t.catering}</h4>
+                                        <p>{t.cateringDesc}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="menu" className="section" style={{background: 'linear-gradient(to bottom, transparent, rgba(139,0,0,0.05))'}}>
+                        <h2 className="section-title reveal">{t.menuTitle}</h2>
+                        <p className="section-subtitle reveal">{t.menuSubtitle}</p>
+                        <div className="menu-filters reveal">
+                            {filters.map(filter => (
+                                <button 
+                                    key={filter.key}
+                                    className={`filter-btn ${activeFilter === filter.key ? 'active' : ''}`}
+                                    onClick={() => setActiveFilter(filter.key)}
+                                >
+                                    {filter.label}
+                                </button>
+                            ))}
+                        </div>
+                        <div className="menu-grid">
+                            {filteredMenu.map((item, index) => (
+                                <div key={item.id} className="menu-card reveal" style={{animationDelay: `${index * 0.1}s`}}>
+                                    <div className="menu-card-image">
+                                        <img src={item.image} alt={item.nameEn} />
+                                        <span className="menu-card-badge">Rs. {item.price}</span>
+                                    </div>
+                                    <div className="menu-card-content">
+                                        <h3 className="menu-card-name-si">{item.nameSi}</h3>
+                                        <p className="menu-card-name-en">{item.nameEn}</p>
+                                        <p className="menu-card-desc">{item.desc}</p>
+                                        <div className="menu-card-footer">
+                                            <span className="menu-card-price">Rs. {item.price}</span>
+                                            <button className="menu-card-order" onClick={() => handleOrder(item)}>
+                                                <i className="fab fa-whatsapp"></i> {t.orderBtn}
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </section>
+
+                    <section id="catering" className="section">
+                        <div className="catering-section reveal">
+                            <div className="catering-content">
+                                <h2 className="section-title" style={{color: '#fff'}}>{t.cateringTitle}</h2>
+                                <p className="catering-text-si">{t.cateringText}</p>
+                                <p className="catering-text-en">{t.cateringTextEn}</p>
+                                <div className="event-cards">
+                                    <div className="event-card">
+                                        <i className="fas fa-heart"></i>
+                                        <h4>{t.weddings}</h4>
+                                    </div>
+                                    <div className="event-card">
+                                        <i className="fas fa-glass-cheers"></i>
+                                        <h4>{t.parties}</h4>
+                                    </div>
+                                    <div className="event-card">
+                                        <i className="fas fa-birthday-cake"></i>
+                                        <h4>{t.birthday}</h4>
+                                    </div>
+                                    <div className="event-card">
+                                        <i className="fas fa-briefcase"></i>
+                                        <h4>{t.corporate}</h4>
+                                    </div>
+                                    <div className="event-card">
+                                        <i className="fas fa-users"></i>
+                                        <h4>{t.functions}</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="gallery" className="section">
+                        <h2 className="section-title reveal">{t.galleryTitle}</h2>
+                        <p className="section-subtitle reveal">{t.gallerySubtitle}</p>
+                        <div className="gallery-grid">
+                            {galleryImages.map((img, index) => (
+                                <div key={index} className="gallery-item reveal" onClick={() => setLightboxImage(img)}>
+                                    <img src={img} alt={`Gallery ${index + 1}`} />
+                                    <div className="gallery-overlay">
+                                        <span className="gallery-overlay-text">
+                                            <i className="fas fa-search-plus"></i> View
+                                        </span>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </section>
+
+                    <section id="order" className="section">
+                        <div className="order-section reveal">
+                            <h2 className="section-title">{t.orderTitle}</h2>
+                            <p className="section-subtitle">{t.orderSubtitle}</p>
+                            <form className="order-form" onSubmit={handleFormSubmit}>
+                                <div className="form-group">
+                                    <label>{t.name}</label>
+                                    <input type="text" name="name" required placeholder={lang === 'si' ? "ඔබගේ නම" : "Your Name"} />
+                                </div>
+                                <div className="form-group">
+                                    <label>{t.phone}</label>
+                                    <input type="tel" name="phone" required placeholder={lang === 'si' ? "දුරකථන අංකය" : "Phone Number"} />
+                                </div>
+                                <div className="form-group">
+                                    <label>{t.orderDetails}</label>
+                                    <textarea name="details" required placeholder={lang === 'si' ? "ඔබට අවශ්‍ය ආහාර සහ ප්‍රමාණය" : "Food items and quantities you need"}></textarea>
+                                </div>
+                                <button type="submit" className="submit-btn">
+                                    <i className="fab fa-whatsapp"></i> {t.submitOrder}
+                                </button>
+                            </form>
+                        </div>
+                    </section>
+
+                    <section id="contact" className="section">
+                        <h2 className="section-title reveal">{t.contactTitle}</h2>
+                        <p className="section-subtitle reveal">{t.contactSubtitle}</p>
+                        <div className="contact-grid reveal">
+                            <a href="tel:0725018517" className="contact-card">
+                                <i className="fas fa-phone-alt"></i>
+                                <h4>{t.phoneLabel}</h4>
+                                <p>0725018517</p>
+                            </a>
+                            <a href="https://wa.me/94725018517" target="_blank" className="contact-card">
+                                <i className="fab fa-whatsapp"></i>
+                                <h4>{t.whatsappLabel}</h4>
+                                <p>0725018517</p>
+                            </a>
+                            <a href="https://www.facebook.com/profile.php?id=61590598074743" target="_blank" className="contact-card">
+                                <i className="fab fa-facebook"></i>
+                                <h4>{t.facebookLabel}</h4>
+                                <p>Themparaduwa</p>
+                            </a>
+                            <div className="contact-card">
+                                <i className="fas fa-map-marker-alt"></i>
+                                <h4>{t.locationLabel}</h4>
+                                <p>{t.onlineService}</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <footer className="footer">
+                        <div className="footer-content">
+                            <div className="footer-brand">
+                                <h3>තෙම්පරාදුව (Themparaduwa)</h3>
+                                <p>{t.aboutText1}</p>
+                                <div className="social-links">
+                                    <a href="https://www.facebook.com/profile.php?id=61590598074743" target="_blank">
+                                        <i className="fab fa-facebook-f"></i>
+                                    </a>
+                                    <a href="https://wa.me/94725018517" target="_blank">
+                                        <i className="fab fa-whatsapp"></i>
+                                    </a>
+                                    <a href="tel:0725018517">
+                                        <i className="fas fa-phone"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div className="footer-links">
+                                <h4>{t.quickLinks}</h4>
+                                <a href="#" onClick={(e) => { e.preventDefault(); scrollToSection('hero'); }}>{t.home}</a>
+                                <a href="#about" onClick={(e) => { e.preventDefault(); scrollToSection('about'); }}>{t.about}</a>
+                                <a href="#menu" onClick={(e) => { e.preventDefault(); scrollToSection('menu'); }}>{t.menu}</a>
+                                <a href="#contact" onClick={(e) => { e.preventDefault(); scrollToSection('contact'); }}>{t.contact}</a>
+                            </div>
+                            <div className="footer-links">
+                                <h4>{t.services}</h4>
+                                <a href="#menu" onClick={(e) => { e.preventDefault(); scrollToSection('menu'); }}>{t.menu}</a>
+                                <a href="#catering" onClick={(e) => { e.preventDefault(); scrollToSection('catering'); }}>{t.catering}</a>
+                                <a href="#order" onClick={(e) => { e.preventDefault(); scrollToSection('order'); }}>{t.order}</a>
+                            </div>
+                            <div className="footer-links">
+                                <h4>{t.followUs}</h4>
+                                <a href="https://www.facebook.com/profile.php?id=61590598074743" target="_blank">Facebook</a>
+                                <a href="https://wa.me/94725018517" target="_blank">WhatsApp</a>
+                                <p style={{color: 'var(--text-gray)', marginTop: '15px'}}>Phone: 0725018517</p>
+                            </div>
+                        </div>
+                        <div className="footer-bottom">
+                            <p>{t.copyright}</p>
+                        </div>
+                    </footer>
+
+                    <a href="https://wa.me/94725018517" target="_blank" className="whatsapp-float">
+                        <i className="fab fa-whatsapp"></i>
+                    </a>
+
+                    <button className="admin-trigger" onClick={() => setShowAdmin(true)} title="Admin Panel">
+                        <i className="fas fa-cog"></i>
+                    </button>
+
+                    {lightboxImage && (
+                        <div className="lightbox" onClick={() => setLightboxImage(null)}>
+                            <button className="lightbox-close"><i className="fas fa-times"></i></button>
+                            <img src={lightboxImage} alt="Gallery" />
+                        </div>
+                    )}
+
+                    {showAdmin && !adminLoggedIn && (
+                        <div className="modal-overlay" onClick={() => setShowAdmin(false)}>
+                            <div className="modal-content" onClick={e => e.stopPropagation()}>
+                                <button className="modal-close" onClick={() => setShowAdmin(false)}>
+                                    <i className="fas fa-times"></i>
+                                </button>
+                                <h2 className="modal-title"><i className="fas fa-lock"></i> Admin Login</h2>
+                                <div className="form-group">
+                                    <label>Password</label>
+                                    <input 
+                                        type="password" 
+                                        value={adminPassword}
+                                        onChange={e => setAdminPassword(e.target.value)}
+                                        placeholder="Enter admin password"
+                                        onKeyPress={e => e.key === 'Enter' && handleAdminLogin()}
+                                    />
+                                </div>
+                                <button className="admin-btn" onClick={handleAdminLogin} style={{width: '100%', marginTop: '10px'}}>
+                                    Login
+                                </button>
+                            </div>
+                        </div>
+                    )}
+
+                    {showAdmin && adminLoggedIn && (
+                        <AdminDashboard 
+                            menuItems={menuItems}
+                            setMenuItems={setMenuItems}
+                            galleryImages={galleryImages}
+                            setGalleryImages={setGalleryImages}
+                            onClose={() => { setShowAdmin(false); setAdminLoggedIn(false); }}
+                            activeTab={adminTab}
+                            setActiveTab={setAdminTab}
+                        />
+                    )}
+                </div>
+            );
+        }
+
+        function AdminDashboard({ menuItems, setMenuItems, galleryImages, setGalleryImages, onClose, activeTab, setActiveTab }) {
+            const [editingItem, setEditingItem] = useState(null);
+            const [newItem, setNewItem] = useState({ nameSi: '', nameEn: '', price: '', desc: '', category: 'paste', image: '' });
+            const [newGalleryUrl, setNewGalleryUrl] = useState('');
+            const [siteSettings, setSiteSettings] = useState(() => {
+                const saved = localStorage.getItem('themparaduwa_settings');
+                return saved ? JSON.parse(saved) : {
+                    heroTitle: 'තෙම්පරාදුව',
+                    heroSubtitleSi: 'රසට කන්න ආස ඔබ වෙනුවෙන්ම',
+                    heroSubtitleEn: 'Delicious homemade Sri Lankan flavors made with love',
+                    phone: '0725018517',
+                    whatsapp: '0725018517',
+                    facebook: 'https://www.facebook.com/profile.php?id=61590598074743',
+                    location: 'Online Service'
+                };
+            });
+
+            useEffect(() => {
+                localStorage.setItem('themparaduwa_settings', JSON.stringify(siteSettings));
+            }, [siteSettings]);
+
+            const handleAddItem = () => {
+                if (!newItem.nameSi || !newItem.nameEn || !newItem.price) {
+                    alert('Please fill in all required fields');
+                    return;
+                }
+                const item = {
+                    id: Date.now(),
+                    ...newItem,
+                    image: newItem.image || 'https://via.placeholder.com/400x300/8B0000/D4AF37?text=Food'
+                };
+                setMenuItems([...menuItems, item]);
+                setNewItem({ nameSi: '', nameEn: '', price: '', desc: '', category: 'paste', image: '' });
+                alert('Item added successfully!');
+            };
+
+            const handleUpdateItem = (item) => {
+                setMenuItems(menuItems.map(i => i.id === item.id ? item : i));
+                setEditingItem(null);
+                alert('Item updated!');
+            };
+
+            const handleDeleteItem = (id) => {
+                if (confirm('Are you sure you want to delete this item?')) {
+                    setMenuItems(menuItems.filter(i => i.id !== id));
+                }
+            };
+
+            const handleAddGallery = () => {
+                if (!newGalleryUrl) {
+                    alert('Please enter an image URL');
+                    return;
+                }
+                setGalleryImages([...galleryImages, newGalleryUrl]);
+                setNewGalleryUrl('');
+                alert('Image added!');
+            };
+
+            const handleDeleteGallery = (index) => {
+                if (confirm('Delete this image?')) {
+                    setGalleryImages(galleryImages.filter((_, i) => i !== index));
+                }
+            };
+
+            return (
+                <div className="admin-dashboard">
+                    <div className="admin-header">
+                        <h2><i className="fas fa-crown"></i> Admin Dashboard</h2>
+                        <button className="admin-close" onClick={onClose}>
+                            <i className="fas fa-sign-out-alt"></i> Exit
+                        </button>
+                    </div>
+                    <div className="admin-body">
+                        <div className="admin-tabs">
+                            <button className={`admin-tab ${activeTab === 'menu' ? 'active' : ''}`} onClick={() => setActiveTab('menu')}>
+                                <i className="fas fa-utensils"></i> Menu
+                            </button>
+                            <button className={`admin-tab ${activeTab === 'gallery' ? 'active' : ''}`} onClick={() => setActiveTab('gallery')}>
+                                <i className="fas fa-images"></i> Gallery
+                            </button>
+                            <button className={`admin-tab ${activeTab === 'settings' ? 'active' : ''}`} onClick={() => setActiveTab('settings')}>
+                                <i className="fas fa-cog"></i> Settings
+                            </button>
+                            <button className={`admin-tab ${activeTab === 'contact' ? 'active' : ''}`} onClick={() => setActiveTab('contact')}>
+                                <i className="fas fa-address-book"></i> Contact
+                            </button>
+                        </div>
+
+                        {activeTab === 'menu' && (
+                            <div className="admin-panel">
+                                <h3 style={{color: 'var(--luxury-gold)', marginBottom: '20px'}}>Menu Management</h3>
+                                <div style={{background: 'var(--dark-black)', padding: '20px', borderRadius: '10px', marginBottom: '30px'}}>
+                                    <h4 style={{color: '#fff', marginBottom: '15px'}}>Add New Item</h4>
+                                    <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px'}}>
+                                        <div className="admin-form-group">
+                                            <label>Sinhala Name</label>
+                                            <input value={newItem.nameSi} onChange={e => setNewItem({...newItem, nameSi: e.target.value})} />
+                                        </div>
+                                        <div className="admin-form-group">
+                                            <label>English Name</label>
+                                            <input value={newItem.nameEn} onChange={e => setNewItem({...newItem, nameEn: e.target.value})} />
+                                        </div>
+                                        <div className="admin-form-group">
+                                            <label>Price (Rs.)</label>
+                                            <input type="number" value={newItem.price} onChange={e => setNewItem({...newItem, price: e.target.value})} />
+                                        </div>
+                                        <div className="admin-form-group">
+                                            <label>Category</label>
+                                            <select value={newItem.category} onChange={e => setNewItem({...newItem, category: e.target.value})} style={{width: '100%', padding: '12px', background: 'var(--dark-black)', border: '1px solid rgba(212,175,55,0.3)', color: '#fff', borderRadius: '8px'}}>
+                                                <option value="paste">Paste</option>
+                                                <option value="cutlet">Cutlet</option>
+                                                <option value="roll">Roll</option>
+                                                <option value="sandwich">Sandwich</option>
+                                            </select>
+                                        </div>
+                                        <div className="admin-form-group" style={{gridColumn: '1 / -1'}}>
+                                            <label>Description</label>
+                                            <textarea value={newItem.desc} onChange={e => setNewItem({...newItem, desc: e.target.value})} />
+                                        </div>
+                                        <div className="admin-form-group" style={{gridColumn: '1 / -1'}}>
+                                            <label>Image URL</label>
+                                            <input value={newItem.image} onChange={e => setNewItem({...newItem, image: e.target.value})} placeholder="https://..." />
+                                        </div>
+                                    </div>
+                                    <button className="admin-btn" onClick={handleAddItem} style={{marginTop: '15px'}}>
+                                        <i className="fas fa-plus"></i> Add Item
+                                    </button>
+                                </div>
+
+                                <h4 style={{color: '#fff', marginBottom: '15px'}}>Edit Items</h4>
+                                <div className="admin-menu-list">
+                                    {menuItems.map(item => (
+                                        <div key={item.id} className="admin-menu-item">
+                                            <img src={item.image} alt={item.nameEn} />
+                                            <div className="admin-menu-item-info">
+                                                {editingItem?.id === item.id ? (
+                                                    <div style={{display: 'grid', gap: '10px'}}>
+                                                        <input value={editingItem.nameSi} onChange={e => setEditingItem({...editingItem, nameSi: e.target.value})} />
+                                                        <input value={editingItem.nameEn} onChange={e => setEditingItem({...editingItem, nameEn: e.target.value})} />
+                                                        <input type="number" value={editingItem.price} onChange={e => setEditingItem({...editingItem, price: e.target.value})} />
+                                                        <input value={editingItem.image} onChange={e => setEditingItem({...editingItem, image: e.target.value})} />
+                                                    </div>
+                                                ) : (
+                                                    <>
+                                                        <h4>{item.nameSi} ({item.nameEn})</h4>
+                                                        <p>Rs. {item.price} | {item.category}</p>
+                                                    </>
+                                                )}
+                                            </div>
+                                            <div className="admin-menu-actions">
+                                                {editingItem?.id === item.id ? (
+                                                    <button className="admin-action-btn edit" onClick={() => handleUpdateItem(editingItem)}>
+                                                        <i className="fas fa-save"></i>
+                                                    </button>
+                                                ) : (
+                                                    <button className="admin-action-btn edit" onClick={() => setEditingItem(item)}>
+                                                        <i className="fas fa-edit"></i>
+                                                    </button>
+                                                )}
+                                                <button className="admin-action-btn delete" onClick={() => handleDeleteItem(item.id)}>
+                                                    <i className="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {activeTab === 'gallery' && (
+                            <div className="admin-panel">
+                                <h3 style={{color: 'var(--luxury-gold)', marginBottom: '20px'}}>Gallery Manager</h3>
+                                <div style={{display: 'flex', gap: '10px', marginBottom: '30px'}}>
+                                    <input 
+                                        value={newGalleryUrl}
+                                        onChange={e => setNewGalleryUrl(e.target.value)}
+                                        placeholder="Enter image URL"
+                                        style={{flex: 1, padding: '12px', background: 'var(--dark-black)', border: '1px solid rgba(212,175,55,0.3)', color: '#fff', borderRadius: '8px'}}
+                                    />
+                                    <button className="admin-btn" onClick={handleAddGallery}>
+                                        <i className="fas fa-plus"></i> Add
+                                    </button>
+                                </div>
+                                <div className="gallery-grid">
+                                    {galleryImages.map((img, index) => (
+                                        <div key={index} style={{position: 'relative'}}>
+                                            <img src={img} alt={`Gallery ${index}`} style={{width: '100%', borderRadius: '10px'}} />
+                                            <button 
+                                                onClick={() => handleDeleteGallery(index)}
+                                                style={{
+                                                    position: 'absolute', top: '10px', right: '10px',
+                                                    background: 'var(--rich-red)', color: '#fff', border: 'none',
+                                                    borderRadius: '50%', width: '35px', height: '35px', cursor: 'pointer'
+                                                }}
+                                            >
+                                                <i className="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {activeTab === 'settings' && (
+                            <div className="admin-panel">
+                                <h3 style={{color: 'var(--luxury-gold)', marginBottom: '20px'}}>Website Settings</h3>
+                                <div className="admin-form-group">
+                                    <label>Hero Title</label>
+                                    <input value={siteSettings.heroTitle} onChange={e => setSiteSettings({...siteSettings, heroTitle: e.target.value})} />
+                                </div>
+                                <div className="admin-form-group">
+                                    <label>Sinhala Subtitle</label>
+                                    <input value={siteSettings.heroSubtitleSi} onChange={e => setSiteSettings({...siteSettings, heroSubtitleSi: e.target.value})} />
+                                </div>
+                                <div className="admin-form-group">
+                                    <label>English Subtitle</label>
+                                    <input value={siteSettings.heroSubtitleEn} onChange={e => setSiteSettings({...siteSettings, heroSubtitleEn: e.target.value})} />
+                                </div>
+                                <button className="admin-btn" onClick={() => alert('Settings saved!')}>
+                                    <i className="fas fa-save"></i> Save Settings
+                                </button>
+                            </div>
+                        )}
+
+                        {activeTab === 'contact' && (
+                            <div className="admin-panel">
+                                <h3 style={{color: 'var(--luxury-gold)', marginBottom: '20px'}}>Contact Editor</h3>
+                                <div className="admin-form-group">
+                                    <label>Phone Number</label>
+                                    <input value={siteSettings.phone} onChange={e => setSiteSettings({...siteSettings, phone: e.target.value})} />
+                                </div>
+                                <div className="admin-form-group">
+                                    <label>WhatsApp Number</label>
+                                    <input value={siteSettings.whatsapp} onChange={e => setSiteSettings({...siteSettings, whatsapp: e.target.value})} />
+                                </div>
+                                <div className="admin-form-group">
+                                    <label>Facebook URL</label>
+                                    <input value={siteSettings.facebook} onChange={e => setSiteSettings({...siteSettings, facebook: e.target.value})} />
+                                </div>
+                                <div className="admin-form-group">
+                                    <label>Location</label>
+                                    <input value={siteSettings.location} onChange={e => setSiteSettings({...siteSettings, location: e.target.value})} />
+                                </div>
+                                <button className="admin-btn" onClick={() => alert('Contact info saved!')}>
+                                    <i className="fas fa-save"></i> Save Contact Info
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            );
+        }
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html>
